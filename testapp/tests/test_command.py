@@ -12,7 +12,7 @@ class Test(TestCase):
         call_command('some_command', stdout=out, stderr=err)
         self.assertEqual(out.getvalue(), 'info message\n')
         self.assertEqual(err.getvalue(), 'error message\nexception handled\n')
-    
+
     def test_max_verbosity(self):
         out = StringIO()
         err = StringIO()
