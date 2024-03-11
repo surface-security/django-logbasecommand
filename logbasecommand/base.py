@@ -33,15 +33,18 @@ class LogBaseCommand(BaseCommand):
         return self.logger.debug(msg, *args, **kwargs)
 
     def log(self, msg, *args, **kwargs):
-        self.__custom_stdout(msg, *args)
+        if self.logger.level <= logging.INFO:
+            self.__custom_stdout(msg, *args)
         return self.logger.info(msg, *args, **kwargs)
 
     def log_warning(self, msg, *args, **kwargs):
-        self.__custom_stderr(msg, *args)
+        if self.logger.level <= logging.WARNING:
+            self.__custom_stderr(msg, *args)
         return self.logger.warning(msg, *args, **kwargs)
 
     def log_error(self, msg, *args, **kwargs):
-        self.__custom_stderr(msg, *args)
+        if self.logger.level <= logging.ERROR:
+            self.__custom_stderr(msg, *args)
         return self.logger.error(msg, *args, **kwargs)
 
     def log_exception(self, msg, *args, **kwargs):
