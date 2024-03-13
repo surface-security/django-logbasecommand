@@ -14,8 +14,8 @@ class LogBaseCommand(BaseCommand):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        prefix = getattr(settings, 'LOGBASECOMMAND_PREFIX', None) or __name__
-        self.logger = logging.getLogger(prefix + '.' + self.__module__.split('.')[-1])
+        prefix = getattr(settings, "LOGBASECOMMAND_PREFIX", None) or __name__
+        self.logger = logging.getLogger(prefix + "." + self.__module__.split(".")[-1])
 
     def __handle_custom_std(self, ifstd, std, msg, *args):
         if ifstd:
@@ -33,15 +33,18 @@ class LogBaseCommand(BaseCommand):
         return self.logger.debug(msg, *args, **kwargs)
 
     def log(self, msg, *args, **kwargs):
-        self.__custom_stdout(msg, *args)
+        if self.logger.level <= logging.INFO:
+            self.__custom_stdout(msg, *args)
         return self.logger.info(msg, *args, **kwargs)
 
     def log_warning(self, msg, *args, **kwargs):
-        self.__custom_stderr(msg, *args)
+        if self.logger.level <= logging.WARNING:
+            self.__custom_stderr(msg, *args)
         return self.logger.warning(msg, *args, **kwargs)
 
     def log_error(self, msg, *args, **kwargs):
-        self.__custom_stderr(msg, *args)
+        if self.logger.level <= logging.ERROR:
+            self.__custom_stderr(msg, *args)
         return self.logger.error(msg, *args, **kwargs)
 
     def log_exception(self, msg, *args, **kwargs):
@@ -49,16 +52,19 @@ class LogBaseCommand(BaseCommand):
         return self.logger.exception(msg, *args, **kwargs)
 
     def execute(self, *args, **options):
-        self.verbosity = options['verbosity']
+        self.verbosity = options["verbosity"]
         self.logger.setLevel(
-            [logging.ERROR, max(self.logger.getEffectiveLevel(), logging.INFO), logging.DEBUG, logging.DEBUG][
-                self.verbosity
-            ]
+            [
+                logging.ERROR,
+                max(self.logger.getEffectiveLevel(), logging.INFO),
+                logging.DEBUG,
+                logging.DEBUG,
+            ][self.verbosity]
         )
 
-        if options.get('stdout') is not None:
+        if options.get("stdout") is not None:
             self.custom_stdout = True
-        if options.get('stderr') is not None:
+        if options.get("stderr") is not None:
             self.custom_stderr = True
 
         super().execute(*args, **options)
