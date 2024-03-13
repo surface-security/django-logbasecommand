@@ -25,5 +25,5 @@ class Test(TestCase):
         out = StringIO()
         err = StringIO()
         call_command('some_command', verbosity=0, stdout=out, stderr=err)
-        self.assertEqual(out.getvalue(), 'info message\n')
+        self.assertEqual(out.getvalue(), '')
         self.assertEqual(err.getvalue(), 'error message\nexception handled\n')
