@@ -56,8 +56,8 @@ class LogBaseCommand(BaseCommand):
         self.logger.setLevel(
             [
                 logging.ERROR,
-                max(self.logger.getEffectiveLevel(), logging.INFO),
-                logging.DEBUG,
+                logging.INFO,
+                logging.WARNING,
                 logging.DEBUG,
             ][self.verbosity]
         )
